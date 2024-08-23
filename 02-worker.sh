@@ -18,13 +18,23 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 #切换到脚本所在的目录
 cd "$SCRIPT_DIR" || { echo "无法切换到目录 $SCRIPT_DIR"; exit 1; }
 
-#定时执行挖矿脚本
-while true; do
-    echo "启动挖矿程序......"
-    #启动挖矿前确保挖矿进程全部关闭
+#运行挖矿相关参数
+#通过nohup后台自定义运行挖矿（可以引用上面定义的的核心数量、钱包地址、挖矿二进制文件名称、工作目录等常用变量）并且挖矿日志写入到worker.log文件
+COMMAND="nohup ./"$BIN" --threads "$CPU_CORES" --worker-wallet-address "$WALLET" >> worker.log 2>&1 &"
+
+#启动进程的函数
+start_process() {
     pkill -f "$BIN"
-    #通过nohup后台自定义运行挖矿（可以引用上面定义的的核心数量、钱包地址、挖矿二进制文件名称、工作目录等常用变量）并且挖矿日志写入到worker.log文件
-    nohup ./"$BIN" --threads "$CPU_CORES" --worker-wallet-address "$WALLET" >> worker.log 2>&1 &
-    #重新运行挖矿的时间（单位为秒）
-    sleep 90000
+    eval "$COMMAND"
+}
+
+#主要的监控循环
+while true; do
+    if ! pgrep -f "ore-mine-pool-linux" > /dev/null; then
+        echo "Process is not running,starting it..."
+        start_process
+    else
+        echo "Process is running"
+    fi
+    sleep 10 #检查间隔时间
 done
