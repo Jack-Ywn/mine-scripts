@@ -30,7 +30,7 @@ start_process() {
 
 #主要的监控循环
 while true; do
-    if ! pgrep -f "ore-mine-pool-linux" > /dev/null; then
+    if ! pgrep -f "$BIN" > /dev/null; then
         echo "Process is not running,starting it..."
         start_process
     else
