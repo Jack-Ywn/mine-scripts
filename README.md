@@ -25,10 +25,9 @@ tree
 #02-worker.sh脚本中对应修改一下信息
 BIN="二进制文件名称"
 WALLET="实际钱包地址"
-nohup ./"$BIN" --threads "$CPU_CORES" --worker-wallet-address "$WALLET" >> worker.log 2>&1 &   
+COMMAND="nohup ./"$BIN" --threads "$CPU_CORES" --worker-wallet-address "$WALLET" >> worker.log 2>&1 &" 
 
 #03-stop.sh脚本中对应修改一下信息
 BIN="二进制文件名称"
-WALLET="实际钱包地址"
 ```
 
